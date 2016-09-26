@@ -9,7 +9,7 @@ param c{(i,j) in E};
 
 var x{(i,j) in E}, binary;
 /*Esta variable es entera, pero no es necesaria definirla como tal*/
-var u{i in V};
+var u{i in V} >= 1;
 
 minimize total: sum{(i,j) in E} c[i,j] * x[i,j];
 
@@ -31,7 +31,20 @@ printf{(i,j) in E: x[i,j]} "      %3d       %3d   %8g\n",
 data;
 
 param n := 12;
-
+/*
+Argentina. Buenos Aires = 1
+Bolivia. Sucre = 2
+Brasil. Brasalia = 3
+Chile. Santiago = 4
+Colombia. Bogota = 5
+Ecuador. Quito = 6
+Guyana. Georgetown = 7
+Paraguay. Asuncian = 8
+Peru. Lima = 9
+Surinam. Paramaribo = 10
+Uruguay. Montevideo = 11
+Venezuela. Caracas = 12
+*/
 param : E : c :=
 1 2 1861.0
 1 3 2340.0
