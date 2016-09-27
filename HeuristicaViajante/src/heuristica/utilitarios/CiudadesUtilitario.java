@@ -12,7 +12,7 @@ public class CiudadesUtilitario {
             "Helsinki", "Paris", "Berlin", "Gibraltar", "Athens", "St-Peter-Port", "Budapest", "Reykjavik", "Dublin",
             "Douglas", "Rome", "Saint-Helier", "Pristina", "Riga", "Vaduz", "Vilnius", "Luxembourg", "Skopje",
             "Valletta", "Chisinau", "Monaco", "Podgorica", "Amsterdam", "Oslo", "Warsaw", "Lisbon", "Bucharest",
-            "Moscow", "San Marino", "Belgrade", "Bratislava", "Ljubljana", "Madrid", "Longyear-byen", "Stockholm",
+            "Moscow", "San-Marino", "Belgrade", "Bratislava", "Ljubljana", "Madrid", "Longyearbyen", "Stockholm",
             "Berne", "Kiev", "London", "Vatican"};
 
     public static String transformarAString(LinkedList<Integer> ciudades, String[] ciudadesEnString) {
