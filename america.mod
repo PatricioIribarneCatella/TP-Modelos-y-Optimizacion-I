@@ -38,7 +38,7 @@ s.t. visitoAntesJqueI{i in vSinOrigen, j in vSinOrigen: i != j}:
 	u[j] <= u[i] + 100*w[i,j];
 
 /*5 dias*24horas/dia*/
-
+/*Esta estadia en cada lugar no es la pedida por el problema*/
 s.t. tiemposDeEstadia{j in vSinOrigen}:
 	horasEstadiaAcumuladas[j] = sum{i in vSinOrigen: i!=j} 5*24 * w[i,j] + 24*5;
 
@@ -51,6 +51,7 @@ s.t. tiempoViajeAcumulado{j in vSinOrigen}:
 s.t. tiempoTotal{i in vSinOrigen}:
 	horasAcumuladasHastaLlegarA[i] = horasViajeAcumulado[i] + horasEstadiaAcumuladas[i];
 
+s
 solve;
 
 
