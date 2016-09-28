@@ -2,24 +2,37 @@
 
 param n, integer;
 set V := 1..n;
+set vOrigen := 11..11;
+set vSinOrigen := V diff vOrigen;
 /*Armo un set de tamanio nxn*/
 set E, within V cross V;
 
 param c{(i,j) in E};
 
 var x{(i,j) in E}, binary;
+var w{(i,j) in E: i!=11 and j!=11}, binary;
 /*Esta variable es entera, pero no es necesaria definirla como tal*/
-var u{i in V} >= 1;
+var u{i in vSinOrigen} >= 1;
 
 minimize total: sum{(i,j) in E} c[i,j] * x[i,j];
 
-s.t. leave{i in V}: sum{(i,j) in E: i != j} x[i,j] = 1;
+s.t. uMaximo{i in vSinOrigen}:
+	u[i] <= n-1;
 
-s.t. enter{j in V}: sum{(i,j) in E: i != j} x[i,j] = 1;
+s.t. soloSalgoUnaVez{i in V}: sum{(i,j) in E: i != j} x[i,j] = 1;
 
-s.t. noSubTour{i in V, j in V: i >= 2 and j >= 2 and i!=j}:
+s.t. soloEntroUnaVez{j in V}: sum{(i,j) in E: i != j} x[i,j] = 1;	
+
+s.t. noSubTour{i in vSinOrigen, j in vSinOrigen: i!=j}:
   u[i]-u[j] + n*x[i,j] <= n - 1;
-  
+
+
+s.t. visitoAntesIqueJ{i in vSinOrigen, j in vSinOrigen: i != j}:
+	u[i] <= u[j] + 100*w[i,j];
+
+s.t. visitoAntesJqueI{i in vSinOrigen, j in vSinOrigen: i != j}:
+	u[j] <= u[i] + 100*(1-w[i,j]);
+
 solve;
 
 printf "El largo del tour optimo es de %d km\n",
