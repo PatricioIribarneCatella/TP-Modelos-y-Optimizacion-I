@@ -14,8 +14,8 @@ var w{(i,j) in E: i!=11 and j!=11}, binary;
 var horasViajeInicial >= 0;
 var horasViajeAcumulado{i in vSinOrigen} >= 0;
 var horasEstadiaAcumuladas{i in vSinOrigen} >= 0;
-var horasAcumuladasHastaLlegarA{i in vSinOrigen};
-
+var horasAcumuladasHastaLlegarA{i in vSinOrigen} >= 0;
+var horasDescansoExtra{i in vSinOrigen} >= 0;
 /*Esta variable es entera, pero no es necesaria definirla como tal*/
 var u{i in vSinOrigen} >= 1;
 
@@ -32,15 +32,15 @@ s.t. noSubTour{i in vSinOrigen, j in vSinOrigen: i!=j}:
   u[i]-u[j] + n*x[i,j] <= n - 1;
 
 s.t. visitoAntesIqueJ{i in vSinOrigen, j in vSinOrigen: i != j}:
-	u[i] <= u[j] + 100*(1-w[i,j]);
+	u[i] <= u[j] + (n+1)*(1-w[i,j]);
 
 s.t. visitoAntesJqueI{i in vSinOrigen, j in vSinOrigen: i != j}:
-	u[j] <= u[i] + 100*w[i,j];
+	u[j] <= u[i] + (n+1)*w[i,j];
 
 /*5 dias*24horas/dia*/
 /*Esta estadia en cada lugar no es la pedida por el problema*/
 s.t. tiemposDeEstadia{j in vSinOrigen}:
-	horasEstadiaAcumuladas[j] = sum{i in vSinOrigen: i!=j} 5*24 * w[i,j] + 24*5;
+	horasEstadiaAcumuladas[j] = (sum{i in vSinOrigen: i!=j} w[i,j] * 24*7) + 24*7;
 
 s.t. tiempoViajeInicial:
 	horasViajeInicial = sum{(i,j) in E: i = 11} c[i,j] * x[i,j] * horasDeViajePorKilometro;
@@ -48,10 +48,11 @@ s.t. tiempoViajeInicial:
 s.t. tiempoViajeAcumulado{j in vSinOrigen}:
 	horasViajeAcumulado[j] = sum{i in vSinOrigen: i != j} w[i,j]*c[i,j]*horasDeViajePorKilometro + horasViajeInicial;
 
+s.t. descansitoExtra{j in vSinOrigen}:
+	horasDescansoExtra[j] = sum{i in vSinOrigen: i != j} w[i,j]*c[i,j]*((5*24/3000);
+
 s.t. tiempoTotal{i in vSinOrigen}:
-	horasAcumuladasHastaLlegarA[i] = horasViajeAcumulado[i] + horasEstadiaAcumuladas[i];
-
-
+	horasAcumuladasHastaLlegarA[i] = horasViajeAcumulado[i] + horasEstadiaAcumuladas[i] + horasDescansoExtra[i];
 
 s.t. argentinaAntesDeTerminarEnero:
 	horasAcumuladasHastaLlegarA[1] <= 31*24;
@@ -72,7 +73,7 @@ s.t. brasilDespuesFebrero:
 
 s.t. brasilAntesFebrero:
 	horasAcumuladasHastaLlegarA[3] <= 31*24+28*24;
-	
+
 solve;
 
 
