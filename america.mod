@@ -51,7 +51,28 @@ s.t. tiempoViajeAcumulado{j in vSinOrigen}:
 s.t. tiempoTotal{i in vSinOrigen}:
 	horasAcumuladasHastaLlegarA[i] = horasViajeAcumulado[i] + horasEstadiaAcumuladas[i];
 
-s
+
+
+s.t. argentinaAntesDeTerminarEnero:
+	horasAcumuladasHastaLlegarA[1] <= 31*24;
+
+
+var llegoDespuesDeEneroAPeru, binary;
+
+s.t. peruDespuesFebrero:
+	horasAcumuladasHastaLlegarA[9] >= (31*24+28*24)*llegoDespuesDeEneroAPeru;
+
+s.t. peruAntesFebrero:
+	horasAcumuladasHastaLlegarA[9] <= (31*24)*(1-llegoDespuesDeEneroAPeru);
+
+var llegoDespuesDeFebreroABrasil, binary;
+
+s.t. brasilDespuesFebrero:
+	horasAcumuladasHastaLlegarA[3] >= 31*24;
+
+s.t. brasilAntesFebrero:
+	horasAcumuladasHastaLlegarA[3] <= 31*24+28*24;
+	
 solve;
 
 
