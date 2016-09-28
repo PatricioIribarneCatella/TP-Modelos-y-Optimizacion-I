@@ -6,11 +6,16 @@ set vOrigen := 11..11;
 set vSinOrigen := V diff vOrigen;
 /*Armo un set de tamanio nxn*/
 set E, within V cross V;
-
+param  horasDeViajePorKilometro := 6/1000;
 param c{(i,j) in E};
 
 var x{(i,j) in E}, binary;
 var w{(i,j) in E: i!=11 and j!=11}, binary;
+var horasViajeInicial >= 0;
+var horasViajeAcumulado{i in vSinOrigen} >= 0;
+var horasEstadiaAcumuladas{i in vSinOrigen} >= 0;
+var horasAcumuladasHastaLlegarA{i in vSinOrigen};
+
 /*Esta variable es entera, pero no es necesaria definirla como tal*/
 var u{i in vSinOrigen} >= 1;
 
@@ -26,14 +31,29 @@ s.t. soloEntroUnaVez{j in V}: sum{(i,j) in E: i != j} x[i,j] = 1;
 s.t. noSubTour{i in vSinOrigen, j in vSinOrigen: i!=j}:
   u[i]-u[j] + n*x[i,j] <= n - 1;
 
-
 s.t. visitoAntesIqueJ{i in vSinOrigen, j in vSinOrigen: i != j}:
-	u[i] <= u[j] + 100*w[i,j];
+	u[i] <= u[j] + 100*(1-w[i,j]);
 
 s.t. visitoAntesJqueI{i in vSinOrigen, j in vSinOrigen: i != j}:
-	u[j] <= u[i] + 100*(1-w[i,j]);
+	u[j] <= u[i] + 100*w[i,j];
+
+/*5 dias*24horas/dia*/
+
+s.t. tiemposDeEstadia{j in vSinOrigen}:
+	horasEstadiaAcumuladas[j] = sum{i in vSinOrigen: i!=j} 5*24 * w[i,j] + 24*5;
+
+s.t. tiempoViajeInicial:
+	horasViajeInicial = sum{(i,j) in E: i = 11} c[i,j] * x[i,j] * horasDeViajePorKilometro;
+
+s.t. tiempoViajeAcumulado{j in vSinOrigen}:
+	horasViajeAcumulado[j] = sum{i in vSinOrigen: i != j} w[i,j]*c[i,j]*horasDeViajePorKilometro + horasViajeInicial;
+
+s.t. tiempoTotal{i in vSinOrigen}:
+	horasAcumuladasHastaLlegarA[i] = horasViajeAcumulado[i] + horasEstadiaAcumuladas[i];
 
 solve;
+
+
 
 printf "El largo del tour optimo es de %d km\n",
    sum{(i,j) in E} c[i,j] * x[i,j];
