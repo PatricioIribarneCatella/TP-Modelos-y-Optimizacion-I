@@ -78,10 +78,10 @@ s.t. argentinaAntesDeTerminarEnero:
 var llegoDespuesDeEneroAPeru, binary;
 
 s.t. peruDespuesFebrero:
-	horasAcumuladasHastaLlegarA[9] >= (31*24+28*24)*llegoDespuesDeEneroAPeru;
+	horasAcumuladasHastaLlegarA[9] + llegoDespuesDeEneroAPeru*2160 >= (31*24+28*24);
 
 s.t. peruAntesFebrero:
-	horasAcumuladasHastaLlegarA[9] <= (31*24)*(1-llegoDespuesDeEneroAPeru);
+	horasAcumuladasHastaLlegarA[9] <= (31*24) + 2160*(1-llegoDespuesDeEneroAPeru);
 
 var llegoDespuesDeFebreroABrasil, binary;
 
