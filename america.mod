@@ -11,11 +11,15 @@ param c{(i,j) in E};
 
 var x{(i,j) in E}, binary;
 var w{(i,j) in E: i!=11 and j!=11}, binary;
-var horasViajeInicial >= 0;
+var kilometrosViajeInicial >= 0;
 var horasViajeAcumulado{i in vSinOrigen} >= 0;
 var horasEstadiaAcumuladas{i in vSinOrigen} >= 0;
 var horasAcumuladasHastaLlegarA{i in vSinOrigen} >= 0;
 var horasDescansoExtra{i in vSinOrigen} >= 0;
+var cantidadDeDescansosExtras{i in vSinOrigen}, integer >= 0;
+var kilometrosRecorridosHasta{i in vSinOrigen} >= 0;
+var z{i in vSinOrigen, j in vSinOrigen, k in vSinOrigen}, binary >= 0;
+
 /*Esta variable es entera, pero no es necesaria definirla como tal*/
 var u{i in vSinOrigen} >= 1;
 
@@ -37,19 +41,32 @@ s.t. visitoAntesIqueJ{i in vSinOrigen, j in vSinOrigen: i != j}:
 s.t. visitoAntesJqueI{i in vSinOrigen, j in vSinOrigen: i != j}:
 	u[j] <= u[i] + (n+1)*w[i,j];
 
-/*5 dias*24horas/dia*/
-/*Esta estadia en cada lugar no es la pedida por el problema*/
 s.t. tiemposDeEstadia{j in vSinOrigen}:
 	horasEstadiaAcumuladas[j] = (sum{i in vSinOrigen: i!=j} w[i,j] * 24*7) + 24*7;
 
-s.t. tiempoViajeInicial:
-	horasViajeInicial = sum{(i,j) in E: i = 11} c[i,j] * x[i,j] * horasDeViajePorKilometro;
+s.t. kilometrosViajeInicialConstraint:
+	kilometrosViajeInicial = sum{(i,j) in E: i = 11} c[i,j] * x[i,j];
+
+s.t. restriccionZ1{i in vSinOrigen, j in vSinOrigen, k in vSinOrigen: i!=j and i!=k}:
+	2*z[i,j,k] <= x[i,j] + w[i,k];
+
+s.t. restriccionZ2{i in vSinOrigen, j in vSinOrigen, k in vSinOrigen: i!=j and i!=k}:
+	x[i,j] + w[i,k] <= 1 + z[i,j,k];
+
+s.t. kilometrosRecorridos{k in vSinOrigen}:
+	(sum{i in vSinOrigen, j in vSinOrigen: i!=j and i!=k} z[i,j,k]*c[i,j]) + kilometrosViajeInicial = kilometrosRecorridosHasta[k];
 
 s.t. tiempoViajeAcumulado{j in vSinOrigen}:
-	horasViajeAcumulado[j] = sum{i in vSinOrigen: i != j} w[i,j]*c[i,j]*horasDeViajePorKilometro + horasViajeInicial;
+	horasViajeAcumulado[j] = kilometrosRecorridosHasta[j]*horasDeViajePorKilometro;
 
-s.t. descansitoExtra{j in vSinOrigen}:
-	horasDescansoExtra[j] = sum{i in vSinOrigen: i != j} w[i,j]*c[i,j]*((5*24/3000);
+s.t. redondeoDescansoExtra1{j in vSinOrigen}:
+	cantidadDeDescansosExtras[j] <= kilometrosRecorridosHasta[j]/3000;
+
+s.t. redondeoDescansoExtra2{j in vSinOrigen}:
+	cantidadDeDescansosExtras[j] >= (kilometrosRecorridosHasta[j]/3000 - 1);
+
+s.t. tiempoDescansoExtra{i in vSinOrigen}:
+	horasDescansoExtra[i] = cantidadDeDescansosExtras[i]*24*5;
 
 s.t. tiempoTotal{i in vSinOrigen}:
 	horasAcumuladasHastaLlegarA[i] = horasViajeAcumulado[i] + horasEstadiaAcumuladas[i] + horasDescansoExtra[i];
@@ -142,7 +159,7 @@ param : E : c :=
 4 6 3786.0
 4 7 4668.0
 4 8 1551.0
-4 9 2469.0
+4 9 2469
 4 10 4669.0
 4 11 1340.0
 4 12 4905.0
