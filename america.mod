@@ -88,7 +88,7 @@ var llegoDespuesDeFebreroABrasil, binary;
 s.t. brasilDespuesFebrero:
 	horasAcumuladasHastaLlegarA[3] >= 31*24;
 
-s.t. brasilAntesFebrero:
+s.t. brasilAntesMarzo:
 	horasAcumuladasHastaLlegarA[3] <= 31*24+28*24;
 
 solve;
