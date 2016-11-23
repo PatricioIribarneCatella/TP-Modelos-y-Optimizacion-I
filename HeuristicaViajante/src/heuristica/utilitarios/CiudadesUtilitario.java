@@ -2,10 +2,12 @@ package heuristica.utilitarios;
 
 import java.util.LinkedList;
 
-public class CiudadesUtilitario {
+public abstract class CiudadesUtilitario {
 
     private static String[] ciudadesEnStringAmerica = {"Buenos-Aires", "Sucre", "Brasilia", "Santiago", "Bogotá",
             "Quito", "Georgetown", "Asunción", "Lima", "Paramaribo", "Montevideo", "Caracas"};
+
+    private static String[] ciudadesEnStringAmericaABSU = {"Buenos-Aires", "Santiago", "Brasilia", "Montevideo"};
 
     private static String[] ciudadesEnStringEuropa = {"Tirana", "Andorra-la-Vella", "Vienna", "Minsk",
             "Brussels", "Sarajevo", "Sofia", "Zagreb", "Nicosia", "Prague", "Copenhagen", "Tallinn", "Torshavn",
@@ -35,5 +37,10 @@ public class CiudadesUtilitario {
     public static String transformarCiudadesDeAmerica(LinkedList<Integer> ciudades) {
 
         return transformarAString(ciudades, ciudadesEnStringAmerica);
+    }
+
+    public static String transformarCiudadesDeAmericaABCU(LinkedList<Integer> ciudades) {
+
+        return transformarAString(ciudades, ciudadesEnStringAmericaABSU);
     }
 }
