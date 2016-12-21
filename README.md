@@ -1,6 +1,6 @@
-# TP-Modelos-y-Optimizacion-I
+# TP-Viajante
 
-Problema del Viajante
+Problema del Viajante (Modelos y Optimización I)
 
 ## Generar soluciones para los modelos
 
