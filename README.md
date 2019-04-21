@@ -1,6 +1,6 @@
 # TP-Viajante
 
-Problema del Viajante (Modelos y Optimización I)
+Problema del Viajante (_Modelos y Optimización I - FIUBA_)
 
 ## Generar soluciones para los modelos
 
